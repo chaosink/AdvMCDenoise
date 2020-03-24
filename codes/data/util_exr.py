@@ -260,7 +260,7 @@ def _sort_dictionary(key):
   elif key == 'Z' or key == 'z':
     return 130
   else:
-    return key
+    return 1000
 
 
 def _channel_sort_key(i):
