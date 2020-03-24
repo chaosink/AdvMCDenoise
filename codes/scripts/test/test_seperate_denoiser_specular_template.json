@@ -1,0 +1,32 @@
+{
+	"name": "013_seperate_CFM_specular_new",
+	"suffix": "_sep_specular",
+	"image_type": "exr",
+	"model": "seperate_cfm_gan",
+	"scale": 4,
+	"gpu_ids": [
+		0
+	],
+	"datasets": {
+		"test": { // the 1st test dataset
+			"name": "tungsten_testset_joint",
+			"mode": "Tungste_testset_joint",
+			"feature": [
+				"albedo",
+				"normal",
+				"depth"
+			],
+			"dataroot_GT": "/media/lin/LinuxSpace/program/CG/AdvMCDenoise_data/data/new_position_scene_gt/",
+			"dataroot_NOISY": "/media/lin/LinuxSpace/program/CG/AdvMCDenoise_data/data/new_position_scene/",
+			// "GT_size": 512
+		}
+	},
+	"path": {
+		"root": "/media/lin/LinuxSpace/program/CG/AdvMCDenoise/",
+		"val_root": "/media/lin/LinuxSpace/program/CG/AdvMCDenoise/",
+		"pretrain_model_G": "/media/lin/LinuxSpace/program/CG/AdvMCDenoise_data/experiments/tungsten_specular/models/opt_G.pth"
+	},
+	"network_G": {
+		"which_model_G": "generator_cfm"
+	}
+}
