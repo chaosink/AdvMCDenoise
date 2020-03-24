@@ -144,3 +144,7 @@ static
 
 # Results
 /results/
+
+# JSON
+/codes/scripts/test/test_seperate_denoiser_diffuse.json
+/codes/scripts/test/test_seperate_denoiser_specular.json
