@@ -9,7 +9,7 @@ import data.util_disney as util_disney
 import random
 
 # for Disney dataset
-SCENE_NAME_LIST = ["bathroom2", "house", "spaceship","staircase", "car2","room2", "room3","classroom"] #  
+SCENE_NAME_LIST = ["bathroom2", "house", "spaceship","staircase", "car2","room2", "room3","classroom"] #
 
 class FeatureDenoiseDataset(data.Dataset):
     def __init__(self, opt):
@@ -24,7 +24,7 @@ class FeatureDenoiseDataset(data.Dataset):
             self.paths_GT.extend([os.path.join(opt["dataroot_GT"], scece_name, prefix+"-32768spp.exr") for prefix in distinct_prefix if os.path.exists(os.path.join(opt["dataroot_GT"], scece_name, prefix+"-32768spp_diffuse.exr"))])
             self.paths_NOISY.extend([os.path.join(opt["dataroot_NOISY"], scece_name, prefix+"-00032spp.exr") for prefix in distinct_prefix if os.path.exists(os.path.join(opt["dataroot_GT"], scece_name, prefix+"-32768spp_diffuse.exr"))])
 
-        self.paths_GT = sorted(self.paths_GT)    
+        self.paths_GT = sorted(self.paths_GT)
         self.paths_NOISY = sorted(self.paths_NOISY)
         combined = list(zip(self.paths_GT, self.paths_NOISY))
         random.shuffle(combined)
@@ -44,8 +44,8 @@ class FeatureDenoiseDataset(data.Dataset):
 
 
 
-        print("[INFO] total number of training_set %d"% len(self.paths_GT))    
-        
+        print("[INFO] total number of training_set %d"% len(self.paths_GT))
+
 
     def __getitem__(self, index):
         GT_path, NOISY_path = None, None
@@ -53,7 +53,7 @@ class FeatureDenoiseDataset(data.Dataset):
 
         GT_path = self.paths_GT[index]
         diffuse_ref = util_disney.loadDisneyEXR_multi_ref_shading(GT_path, self.opt["feature"]+["diffuse"])
-       
+
         NOISY_path = self.paths_NOISY[index]
         diffuse_in, features = util_disney.loadDisneyEXR_feature_shading(NOISY_path, self.opt["feature"]+["diffuse"])
 
@@ -61,13 +61,13 @@ class FeatureDenoiseDataset(data.Dataset):
             # augmentation - flip, rotate
             diffuse_ref,  diffuse_in, features= util.augment([diffuse_ref, diffuse_in, features], self.opt['use_flip'], \
                 self.opt['use_rot'])
-        
+
         features = torch.from_numpy(np.ascontiguousarray(np.transpose(features, (2, 0, 1)))).float()
         diffuse_in = torch.from_numpy(np.ascontiguousarray(np.transpose(diffuse_in, (2, 0, 1)))).float()
         diffuse_ref = torch.from_numpy(np.ascontiguousarray(np.transpose(diffuse_ref, (2, 0, 1)))).float()
         return {
-        "seg":features, 
-        "diffuse_in" : diffuse_in, 
+        "seg":features,
+        "diffuse_in" : diffuse_in,
         "diffuse_ref" : diffuse_ref,
         'NOISY_path': NOISY_path, 'GT_path': GT_path,
         "x_offset": 128,
@@ -79,7 +79,7 @@ class FeatureDenoiseDataset(data.Dataset):
 
     #     GT_path = self.paths_GT[index]
     #     img_GT = util_disney.loadDisneyEXR_ref(GT_path)
-       
+
     #     NOISY_path = self.paths_NOISY[index]
     #     img_NOISY = util_disney.loadDisneyEXR_feature(NOISY_path)
 

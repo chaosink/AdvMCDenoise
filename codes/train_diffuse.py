@@ -132,14 +132,14 @@ def main():
                     model.test()
                     if opt["image_type"] == "exr":
                         y = val_data["x_offset"]
-                        x = val_data["y_offset"]                    
+                        x = val_data["y_offset"]
                     visuals = model.get_current_visuals()
                     avg_mrse += util.calculate_mrse(visuals["DENOISED"].numpy(), visuals["GT"].numpy())
                     lr_img = util.tensor2img(visuals['NOISY'])
                     sr_img = util.tensor2img(visuals['DENOISED'])  # uint8
                     gt_img = util.tensor2img(visuals['GT'])  # uint8
 
-############################################################################################## 
+##############################################################################################
                     # sr_img = util.tensor2img(visuals['DENOISED'])  # uint8
                     # lr_img = util.tensor2img(visuals['NOISY'])
                     # gt_img = util.tensor2img(visuals['GT'])  # uint8
@@ -184,10 +184,10 @@ def main():
                         # gt_exr = gt_exr[y:1280-y, x:1280-x, :]
                         save_DENOISED_img_path = os.path.join(img_dir, '{:s}_{:d}_1denoised.exr'.format(img_name, current_step))
                         save_NOISY_img_path = os.path.join(img_dir, '{:s}_{:d}_0noisy.exr'.format(img_name, current_step))
-                        save_GT_img_path = os.path.join(img_dir, '{:s}_{:d}_2gt.exr'.format(img_name, current_step)) 
-                    
-                        util.saveEXRfromMatrix(save_DENOISED_img_path, sr_exr, (x, y)) 
-                        util.saveEXRfromMatrix(save_NOISY_img_path, lr_exr, (x, y))  
+                        save_GT_img_path = os.path.join(img_dir, '{:s}_{:d}_2gt.exr'.format(img_name, current_step))
+
+                        util.saveEXRfromMatrix(save_DENOISED_img_path, sr_exr, (x, y))
+                        util.saveEXRfromMatrix(save_NOISY_img_path, lr_exr, (x, y))
                         util.saveEXRfromMatrix(save_GT_img_path, gt_exr, (x, y))
 
 ##############################################################################################

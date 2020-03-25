@@ -70,12 +70,12 @@ for test_loader in test_loaders:
         suffix = opt['suffix']
         if suffix ==None:
             suffix = ""
-            
+
         save_DENOISED_img_path = os.path.join(dataset_dir, img_name + suffix + '_1denoised.png')
         save_NOISY_img_path = os.path.join(dataset_dir, img_name + suffix + '_0noisy.png')
         save_GT_img_path = os.path.join(dataset_dir, img_name + suffix + '_2gt.png')
-  
-        
+
+
         # calculate PSNR and SSIM
         if need_GT:
             # gt_img = util.tensor2img(visuals['GT'])
@@ -115,10 +115,10 @@ for test_loader in test_loaders:
 
             save_DENOISED_img_path = os.path.join(dataset_dir, img_name + suffix + '_1denoised.exr')
             save_NOISY_img_path = os.path.join(dataset_dir, img_name + suffix + '_0noisy.exr')
-            save_GT_img_path = os.path.join(dataset_dir, img_name + suffix + '_2gt.exr') 
-  
-            util.saveEXRfromMatrix(save_DENOISED_img_path, denoised_exr, (x, y)) 
-            util.saveEXRfromMatrix(save_NOISY_img_path, noisy_exr, (x, y))  
+            save_GT_img_path = os.path.join(dataset_dir, img_name + suffix + '_2gt.exr')
+
+            util.saveEXRfromMatrix(save_DENOISED_img_path, denoised_exr, (x, y))
+            util.saveEXRfromMatrix(save_NOISY_img_path, noisy_exr, (x, y))
             util.saveEXRfromMatrix(save_GT_img_path, gt_exr, (x, y))
 
     if need_GT:  # metrics

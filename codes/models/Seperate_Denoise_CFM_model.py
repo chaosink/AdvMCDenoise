@@ -71,7 +71,7 @@ class Seperate_Denoise_CFM_Model(BaseModel):
                 self.cri_gp = GradientPenaltyLoss(device=self.device).to(self.device)
                 self.l_gp_w = train_opt['gp_weigth']
 
-           
+
 
             # optimizers
             # G
@@ -83,7 +83,7 @@ class Seperate_Denoise_CFM_Model(BaseModel):
                     optim_params_CFM.append(v)
                 else:
                     optim_params_other.append(v)
-            if len(optim_params_CFM) !=0: 
+            if len(optim_params_CFM) !=0:
                 self.optimizer_G_CFM = torch.optim.Adam(optim_params_CFM, lr=train_opt['lr_G']*5, \
                     weight_decay=wd_G, betas=(train_opt['beta1_G'], 0.999))
                 self.optimizers.append(self.optimizer_G_CFM)
@@ -122,7 +122,7 @@ class Seperate_Denoise_CFM_Model(BaseModel):
 
 
 
-            
+
     def feed_data_diffuse(self, data, need_GT=True):
         # seg
         self.var_seg = data['seg'].to(self.device)
@@ -139,7 +139,7 @@ class Seperate_Denoise_CFM_Model(BaseModel):
         # seg
         self.var_seg = data['seg'].to(self.device)
         self.var_L = data["specular_in"].to(self.device)
-        self.var_H = data["specular_ref"].to(self.device)        
+        self.var_H = data["specular_ref"].to(self.device)
 
     def optimize_parameters(self, step):
         # G
@@ -169,7 +169,7 @@ class Seperate_Denoise_CFM_Model(BaseModel):
                 self.optimizer_G_CFM.step()
             else:
                 self.optimizer_G_other.step()
-                   
+
         if step > 20000 and self.optimizer_G_CFM_exist:
             self.optimizer_G_other.step()
 
@@ -180,9 +180,9 @@ class Seperate_Denoise_CFM_Model(BaseModel):
         pred_d_real = self.netD(self.var_H)
         l_d_real = self.cri_gan(pred_d_real, True)
         # fake data
-        pred_d_fake = self.netD(self.fake_H.detach())  
+        pred_d_fake = self.netD(self.fake_H.detach())
         l_d_fake = self.cri_gan(pred_d_fake, False)
-        l_d_total = (l_d_real + l_d_fake)/2.0  
+        l_d_total = (l_d_real + l_d_fake)/2.0
 
         if self.opt['train']['gan_type'] == 'wgan-gp':
             batch_size = self.var_H.size(0)

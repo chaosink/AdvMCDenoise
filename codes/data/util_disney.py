@@ -6,10 +6,10 @@ import data.util_exr as exr_utils
 import os
 
 def _crop(img, pos, size):
-    ow, oh = img.shape[0], img.shape[1]  
+    ow, oh = img.shape[0], img.shape[1]
     x1, y1 = pos
     tw = th = size
-    if (ow > tw or oh > th):        
+    if (ow > tw or oh > th):
         # return img.crop((x1, y1, x1 + tw, y1 + th)) #CHANGED
         return img[x1:(x1 + tw), y1:(y1 + th), :]
     return img
@@ -57,7 +57,7 @@ def CalcMean(data):
 
 def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 	# time0 = time.time()
-	
+
 	prefix = path.split(".")[0]
 
 	# color_path = prefix + "_color.exr"
@@ -78,47 +78,47 @@ def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 			normal = inFile.get_all()["default"]
 			normal = _crop(normal, (1,1), 128)
 		except Exception:
-			normal = np.zeros((128,128,3))	
+			normal = np.zeros((128,128,3))
 
-	if "depth" in FEATURE_LIST:		
-		try:	
+	if "depth" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(depth_path)
 			depth = inFile.get_all()["default"]
 			depth = _crop(depth, (1,1), 128)
 		except Exception:
-			depth = np.zeros((128,128,1))	
+			depth = np.zeros((128,128,1))
 
 	# if "albedo" in FEATURE_LIST:		//always load in albedo
-	try:	
+	try:
 		inFile = exr_utils.open(texture_path)
 		texture = inFile.get_all()["default"]
 		texture = _crop(texture, (1,1), 128)
 	except Exception:
 		texture = np.zeros((128,128,3))
 
-	if "visibility" in FEATURE_LIST:		
-		try:		
+	if "visibility" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(visibility_path)
 			visibility = inFile.get_all()["default"]
 			visibility = _crop(visibility, (1,1), 128)
 		except Exception:
 			visibility = np.zeros((128,128,1))
 
-	if "diffuse" in FEATURE_LIST:		
-		try:			
+	if "diffuse" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(diffuse_path)
 			diffuse = inFile.get_all()["default"]
 			diffuse = _crop(diffuse, (1,1), 128)
 		except Exception:
-			diffuse = np.zeros((128,128,3))	
+			diffuse = np.zeros((128,128,3))
 
-	if "specular" in FEATURE_LIST:		
-		try:		
+	if "specular" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(specular_path)
 			specular = inFile.get_all()["default"]
 			specular = _crop(specular, (1,1), 128)
 		except Exception:
-			specular = np.zeros((128,128,3))	
+			specular = np.zeros((128,128,3))
 
 	# variance = CalcRelVar( (1+ color.copy()) , variance, False, False, True )
 
@@ -127,7 +127,7 @@ def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 		diffuse = diffuse / (texture + 0.00316)
 		diffuse = LogTransform(diffuse)
 		color = diffuse
-	if "specular" in FEATURE_LIST:	
+	if "specular" in FEATURE_LIST:
 		specular[specular < 0.0] = 0.0
 		specular = LogTransform(specular)
 		color = specular
@@ -139,7 +139,7 @@ def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 			normal = (normal + 1.0)*0.5
 			normal = np.maximum(np.minimum(normal,1.0),0.0)
 		feature_tuple += (normal,)
-	if "depth" in FEATURE_LIST:	
+	if "depth" in FEATURE_LIST:
 		# Normalize current frame depth to [0,1]
 		maxDepth = np.max(depth)
 		if maxDepth != 0:
@@ -149,7 +149,7 @@ def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 			# texture = np.clip(texture,0.0,1.0)
 		feature_tuple += (texture, )
 	if "visibility" in FEATURE_LIST:
-		feature_tuple += (visibility, )		
+		feature_tuple += (visibility, )
 
 
 	if len(feature_tuple) == 0:
@@ -162,7 +162,7 @@ def loadDisneyEXR_feature_shading(path, FEATURE_LIST):
 
 def loadDisneyEXR_multi_ref_shading(path, FEATURE_LIST):
 	# time0 = time.time()
-	
+
 	prefix = path.split(".")[0]
 
 	color_path = prefix + "_color.exr"
@@ -170,34 +170,34 @@ def loadDisneyEXR_multi_ref_shading(path, FEATURE_LIST):
 	specular_path = prefix + "_specular.exr"
 	texture_path = prefix + "_texture.exr"
 
-	if "diffuse" in FEATURE_LIST:	
-		try:	
+	if "diffuse" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(diffuse_path)
 			diffuse = inFile.get_all()["default"]
 			diffuse = _crop(diffuse, (1,1), 128)
 		except Exception:
-			diffuse = np.zeros((128,128,3))	
-	if "specular" in FEATURE_LIST:		
-		try:		
+			diffuse = np.zeros((128,128,3))
+	if "specular" in FEATURE_LIST:
+		try:
 			inFile = exr_utils.open(specular_path)
 			specular = inFile.get_all()["default"]
 			specular = _crop(specular, (1,1), 128)
 		except Exception:
 			specular = np.zeros((128,128,3))
 
-	try:	
+	try:
 		inFile = exr_utils.open(texture_path)
 		texture = inFile.get_all()["default"]
 		texture = _crop(texture, (1,1), 128)
 	except Exception:
-		texture = np.zeros((128,128,3))	
+		texture = np.zeros((128,128,3))
 
 	if "diffuse" in FEATURE_LIST:
 		diffuse[diffuse < 0.0] = 0.0
 		diffuse = diffuse / (texture + 0.00316)
 		diffuse = LogTransform(diffuse)
 		color = diffuse
-	if "specular" in FEATURE_LIST:	
+	if "specular" in FEATURE_LIST:
 		specular[specular < 0.0] = 0.0
 		specular = LogTransform(specular)
 		color = specular
@@ -252,7 +252,7 @@ def loadDisneyEXR_ref(path):
 
 # def loadDisneyEXR_feature(path, FEATURE_LIST):
 # 	# time0 = time.time()
-	
+
 # 	prefix = path.split(".")[0]
 
 # 	color_path = prefix + "_color.exr"
@@ -269,7 +269,7 @@ def loadDisneyEXR_ref(path):
 # 		color = inFile.get_all()["default"]
 # 		color = _crop(color, (1,1), 128)
 # 	except Exception:
-# 		color = np.zeros((128,128,3))	
+# 		color = np.zeros((128,128,3))
 # 	# inFile = exr_utils.open(variance_path)
 # 	# variance = inFile.get_all()["default"]
 # 	try:
@@ -277,38 +277,38 @@ def loadDisneyEXR_ref(path):
 # 		normal = inFile.get_all()["default"]
 # 		normal = _crop(normal, (1,1), 128)
 # 	except Exception:
-# 		normal = np.zeros((128,128,3))	
-# 	try:	
+# 		normal = np.zeros((128,128,3))
+# 	try:
 # 		inFile = exr_utils.open(depth_path)
 # 		depth = inFile.get_all()["default"]
 # 		depth = _crop(depth, (1,1), 128)
 # 	except Exception:
-# 		depth = np.zeros((128,128,1))	
-# 	try:	
+# 		depth = np.zeros((128,128,1))
+# 	try:
 # 		inFile = exr_utils.open(texture_path)
 # 		texture = inFile.get_all()["default"]
 # 		texture = _crop(texture, (1,1), 128)
 # 	except Exception:
-# 		texture = np.zeros((128,128,3))	
-# 	# try:		
+# 		texture = np.zeros((128,128,3))
+# 	# try:
 # 	# 	inFile = exr_utils.open(visibility_path)
 # 	# 	visibility = inFile.get_all()["default"]
 # 	# 	visibility = _crop(visibility
 # 	# 		, (1,1), 128)
 # 	# except Exception:
 # 	# 	visibility = np.zeros((128,128,1))
-# 	try:			
+# 	try:
 # 		inFile = exr_utils.open(diffuse_path)
 # 		diffuse = inFile.get_all()["default"]
 # 		diffuse = _crop(diffuse, (1,1), 128)
 # 	except Exception:
-# 		diffuse = np.zeros((128,128,3))	
-# 	try:		
+# 		diffuse = np.zeros((128,128,3))
+# 	try:
 # 		inFile = exr_utils.open(specular_path)
 # 		specular = inFile.get_all()["default"]
 # 		specular = _crop(specular, (1,1), 128)
 # 	except Exception:
-# 		specular = np.zeros((128,128,3))	
+# 		specular = np.zeros((128,128,3))
 
 # 	# variance = CalcRelVar( (1+ color.copy()) , variance, False, False, True )
 # 	color[color < 0.0] = 0.0
@@ -326,8 +326,8 @@ def loadDisneyEXR_ref(path):
 # 		depth /= maxDepth
 
 # 	# texture = np.clip(texture,0.0,1.0)
-	
-# 	# feautres = np.concatenate((variance,  normal, depth, texture, visibility), axis=2)	
+
+# 	# feautres = np.concatenate((variance,  normal, depth, texture, visibility), axis=2)
 # 	feautres = np.concatenate((normal, depth, texture), axis=2)	 #visibility
 
 # 	return color, diffuse, specular, feautres
@@ -337,7 +337,7 @@ def loadDisneyEXR_ref(path):
 
 # def loadDisneyEXR_multi_ref(path, FEATURE_LIST):
 # 	# time0 = time.time()
-	
+
 # 	prefix = path.split(".")[0]
 
 # 	color_path = prefix + "_color.exr"
@@ -348,19 +348,19 @@ def loadDisneyEXR_ref(path):
 # 		color = inFile.get_all()["default"]
 # 		color = _crop(color, (1,1), 128)
 # 	except Exception:
-# 		color = np.zeros((128,128,3))	
-# 	try:	
+# 		color = np.zeros((128,128,3))
+# 	try:
 # 		inFile = exr_utils.open(diffuse_path)
 # 		diffuse = inFile.get_all()["default"]
 # 		diffuse = _crop(diffuse, (1,1), 128)
 # 	except Exception:
-# 		diffuse = np.zeros((128,128,3))	
-# 	try:		
+# 		diffuse = np.zeros((128,128,3))
+# 	try:
 # 		inFile = exr_utils.open(specular_path)
 # 		specular = inFile.get_all()["default"]
 # 		specular = _crop(specular, (1,1), 128)
 # 	except Exception:
-# 		specular = np.zeros((128,128,3))		
+# 		specular = np.zeros((128,128,3))
 
 # 	color[color<0.0] = 0.0
 # 	color = LogTransform(color)

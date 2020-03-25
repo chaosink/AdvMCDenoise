@@ -69,14 +69,14 @@ class BaseModel():
         if isinstance(network, nn.DataParallel):
             network = network.module
         state_dict =  torch.load(load_path)
-        to_move = [ "features.3.num_batches_tracked", "features.6.num_batches_tracked", 
-        "features.9.num_batches_tracked", "features.12.num_batches_tracked", "features.15.num_batches_tracked", 
+        to_move = [ "features.3.num_batches_tracked", "features.6.num_batches_tracked",
+        "features.9.num_batches_tracked", "features.12.num_batches_tracked", "features.15.num_batches_tracked",
         "features.18.num_batches_tracked", "features.21.num_batches_tracked", "features.24.num_batches_tracked",
          "features.27.num_batches_tracked"]
         for key_to_move in to_move:
             del state_dict[key_to_move]
         # network.load_state_dict(torch.load(load_path), strict=strict)
-        network.load_state_dict(state_dict, strict=strict)    
+        network.load_state_dict(state_dict, strict=strict)
 
     def save_training_state(self, epoch, iter_step):
         '''Saves training state during training, which will be used for resuming'''

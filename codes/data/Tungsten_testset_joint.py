@@ -20,7 +20,7 @@ def get_distinct_prefix(dir_path):
 def load_reference_mat(path_ref, scene_name, path_feature=None):
     color_path = os.path.join(path_ref, scene_name)
     inFile = exr_utils.open(color_path)
-    color = inFile.get_all()["default"]    
+    color = inFile.get_all()["default"]
     color = np.log(color+1)
     return color
 
@@ -41,9 +41,9 @@ class TungstenTestset(data.Dataset):
             #     continue
             # self.paths_GT.append(os.path.join(opt["dataroot_GT"], scece_name + ".exr") )
             self.paths_NOISY.append(os.path.join(opt["dataroot_NOISY"], distinct_prefix + ".exr") )
-        # self.paths_GT = sorted(self.paths_GT)    
+        # self.paths_GT = sorted(self.paths_GT)
         self.paths_NOISY = sorted(self.paths_NOISY)
-        
+
     def __getitem__(self, index):
         # print("[INFO]getting item from dataloader.... index = %d len(paths_NOISY)=%d" % (index,len(self.paths_NOISY)))
         GT_path, NOISY_path = None, None
@@ -52,16 +52,16 @@ class TungstenTestset(data.Dataset):
         scece_name = os.path.basename(NOISY_path).split(".")[0].split("_")[0]
 
         GT_path = os.path.join(self.opt["dataroot_GT"], scece_name + ".exr")
-      
+
         # img_GT = load_reference_mat("",GT_path)
-        img_GT, diffuse_ref, specular_ref, features_ref = util.load_feature_mat_complete_tungsten_joint(GT_path, self.opt["feature"]+["diffuse"]) 
-        img_NOISY, diffuse, specular, features = util.load_feature_mat_complete_tungsten_joint(NOISY_path,  self.opt["feature"]+["diffuse"]) 
-        
+        img_GT, diffuse_ref, specular_ref, features_ref = util.load_feature_mat_complete_tungsten_joint(GT_path, self.opt["feature"]+["diffuse"])
+        img_NOISY, diffuse, specular, features = util.load_feature_mat_complete_tungsten_joint(NOISY_path,  self.opt["feature"]+["diffuse"])
+
         if(diffuse_ref is None):
             img_GT = load_reference_mat("",GT_path)
             diffuse_ref = diffuse.copy()
             specular_ref = specular.copy()
-        
+
 
         y = img_GT.shape[1] #(1280 - img_GT.shape[1])//2 #800
         x = img_GT.shape[0] #(1280 - img_GT.shape[0])//2
@@ -70,13 +70,13 @@ class TungstenTestset(data.Dataset):
         # diffuse_ref = np.pad(diffuse_ref,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
         # specular_ref = np.pad(specular_ref,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
 
-        
-       
+
+
         # img_NOISY = np.pad(color,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
         # diffuse = np.pad(diffuse,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
         # specular = np.pad(specular,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
         # # features = np.pad(features,  [(x, x), (y, y), (0, 0)], mode="constant", constant_values=(0.0) )
-        # # color, diffuse, specular, features = util.load_feature_mat_complete_tungsten_joint(NOISY_path) 
+        # # color, diffuse, specular, features = util.load_feature_mat_complete_tungsten_joint(NOISY_path)
         # # img_NOISY = np.pad(color,  [(x, x), (y, y), (0, 0)], mode="edge" )
         # # diffuse = np.pad(diffuse,  [(x, x), (y, y), (0, 0)], mode="edge" )
         # # specular = np.pad(specular,  [(x, x), (y, y), (0, 0)], mode="edge" )
@@ -97,14 +97,14 @@ class TungstenTestset(data.Dataset):
             NOISY_path = GT_path
 
 
-        return {'NOISY': img_NOISY, 
-        "seg":features, 
-        "diffuse_in" : diffuse_in, 
-        "specular_in" : specular_in, 
+        return {'NOISY': img_NOISY,
+        "seg":features,
+        "diffuse_in" : diffuse_in,
+        "specular_in" : specular_in,
         'GT': img_GT,
         "diffuse_ref" : diffuse_ref,
         "specular_ref" : specular_ref,
-        'NOISY_path': NOISY_path, 
+        'NOISY_path': NOISY_path,
         'GT_path': GT_path,
         "x_offset": x,
         "y_offset": y

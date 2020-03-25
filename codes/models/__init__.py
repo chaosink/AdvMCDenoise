@@ -4,9 +4,9 @@ logger = logging.getLogger('base')
 
 def create_model(opt):
     model = opt['model']
-    
+
     if model == "resnet":
-        from .Seperate_Denoise_Resnet_model import Seperate_Denoise_Resnet_Model as M 
+        from .Seperate_Denoise_Resnet_model import Seperate_Denoise_Resnet_Model as M
     elif model == "seperate_cfm_gan":
         from .Seperate_Denoise_CFM_model import Seperate_Denoise_CFM_Model as M
     else:

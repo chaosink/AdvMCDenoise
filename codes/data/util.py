@@ -193,10 +193,10 @@ def modcrop(img_in, scale):
 
 
 def _crop(img, pos, size):
-    ow, oh = img.shape[0], img.shape[1]  
+    ow, oh = img.shape[0], img.shape[1]
     x1, y1 = pos
     tw = th = size
-    if (ow > tw or oh > th):        
+    if (ow > tw or oh > th):
         # return img.crop((x1, y1, x1 + tw, y1 + th)) #CHANGED
         return img[x1:(x1 + tw), y1:(y1 + th), :]
     return img
@@ -473,14 +473,14 @@ def load_feature_mat_patch(path):
     normal_path = join(path + "_normal.exr")
     depth_path = join(path + "_depth.exr")
     texture_path = join(path + "_texture.exr")
-    
+
 
     res_tuple = ()
-    
+
     if "color" in CURRENT_FEATURE_NAME_LIST:
         color = loadEXR2matrix(color_path)
         color = np.log(color+1)
-        res_tuple = res_tuple + (color,) 
+        res_tuple = res_tuple + (color,)
 
     if "normal" in CURRENT_FEATURE_NAME_LIST:
         normal = loadEXR2matrix(normal_path)
@@ -488,7 +488,7 @@ def load_feature_mat_patch(path):
         # normal = (normal + 1.0)*0.5
         # normal = np.maximum(np.minimum(normal,1.0),0.0)
         res_tuple = res_tuple + (normal, )
-    
+
     if "depth" in CURRENT_FEATURE_NAME_LIST:
         depth = loadEXR2matrix(depth_path)[:,:,:1]
         # depth  = depth/np.max(depth)
@@ -496,7 +496,7 @@ def load_feature_mat_patch(path):
 
     if "texture" in CURRENT_FEATURE_NAME_LIST:
         texture= loadEXR2matrix(texture_path)
-        res_tuple = res_tuple + (texture, )  
+        res_tuple = res_tuple + (texture, )
 
     mat = np.concatenate(res_tuple, axis=2)
     return mat
@@ -508,14 +508,14 @@ def load_feature_mat(path, ID):
     normal_path = join(path,ID, "normal.exr")
     depth_path = join(path, ID, "depth.exr")
     texture_path = join(path, ID, "texture.exr")
-    
+
 
     res_tuple = ()
-    
+
     if "color" in CURRENT_FEATURE_NAME_LIST:
         color = loadEXR2matrix(color_path)
         color = np.log(color+1)
-        res_tuple = res_tuple + (color,) 
+        res_tuple = res_tuple + (color,)
 
     if "normal" in CURRENT_FEATURE_NAME_LIST:
         normal = loadEXR2matrix(normal_path)
@@ -523,7 +523,7 @@ def load_feature_mat(path, ID):
         # normal = (normal + 1.0)*0.5
         # normal = np.maximum(np.minimum(normal,1.0),0.0)
         res_tuple = res_tuple + (normal, )
-    
+
     if "depth" in CURRENT_FEATURE_NAME_LIST:
         depth = loadEXR2matrix(depth_path)[:,:,:1]
         # depth  = depth/np.max(depth)
@@ -531,7 +531,7 @@ def load_feature_mat(path, ID):
 
     if "texture" in CURRENT_FEATURE_NAME_LIST:
         texture= loadEXR2matrix(texture_path)
-        res_tuple = res_tuple + (texture, )  
+        res_tuple = res_tuple + (texture, )
 
     mat = np.concatenate(res_tuple, axis=2)
     return mat
@@ -542,17 +542,17 @@ def load_feature_mat_patch_shading(path):
     normal_path = join(path + "_normal.exr")
     depth_path = join(path + "_depth.exr")
     texture_path = join(path + "_albedo.exr")
-    
+
 
     res_tuple = ()
-    
+
     if "color" in CURRENT_FEATURE_NAME_LIST:
         color = loadEXR2matrix(color_path)
 
     if "normal" in CURRENT_FEATURE_NAME_LIST:
         normal = loadEXR2matrix(normal_path)
         normal = np.nan_to_num(normal)
-    
+
     if "depth" in CURRENT_FEATURE_NAME_LIST:
         depth = loadEXR2matrix(depth_path)[:,:,:1]
 
@@ -561,20 +561,20 @@ def load_feature_mat_patch_shading(path):
 
     color = color/(texture+ 1e-3)
     color = np.log(color+1)
-    res_tuple = (color, normal, depth)     
+    res_tuple = (color, normal, depth)
     mat = np.concatenate(res_tuple, axis=2)
     return mat
 
 
 def load_reference_mat(path_ref, scene_name):
     file_full_path = join(path_ref, scene_name)
-    color = loadEXR2matrix(file_full_path)    
+    color = loadEXR2matrix(file_full_path)
     color = np.log(color+1)
     return color
 
 def load_reference_tungsten_mat_shading(path_ref, scene_name, path_feature=None):
     file_full_path = join(path_ref, scene_name)
-    color = loadEXR2matrix(file_full_path)    
+    color = loadEXR2matrix(file_full_path)
     if path_feature != None:
         texture_path = join(path_feature.rsplit(".",1)[0] + "_albedo.exr")
         texture= loadEXR2matrix(texture_path)
@@ -594,7 +594,7 @@ def loadEXR2matrixYChannel(path):
     data = np.array([np.fromstring(image.channel(c, FLOAT), dtype=np.float32) for c in 'Y'])
     data = np.moveaxis(data, 0, -1)
     data = data.reshape(size[1], size[0], 1) #(600,800,3)
-    return data 
+    return data
 
 
 
@@ -654,12 +654,12 @@ def load_feature_mat_complete_tungsten_joint(path, FEATURE_LIST):
     # normal.fill(0.0)
     # # visibility.fill(0.0)
     # depth.fill(0.0)
-    # texture.fill(0.0)    
+    # texture.fill(0.0)
 
     # texture = np.clip(texture,0.0,1.0)
-    
-    # feautres = np.concatenate((variance,  normal, depth, texture, visibility), axis=2)    
-    feautres = np.concatenate((normal, depth, texture), axis=2) 
+
+    # feautres = np.concatenate((variance,  normal, depth, texture, visibility), axis=2)
+    feautres = np.concatenate((normal, depth, texture), axis=2)
 
     return diffuse, diffuse, specular, feautres
     # return np.concatenate((color, normal, depth, texture), axis=2)
@@ -695,7 +695,7 @@ def load_feature_mat_complete_tungsten(input_dir, scene_name):
     if "texture" in CURRENT_FEATURE_NAME_LIST:
         texture= loadEXR2matrix(texture_path)
         texture = np.clip(texture,0.0,1.0)
-        res_tuple = res_tuple + (texture, )      
+        res_tuple = res_tuple + (texture, )
 
     mat = np.concatenate(res_tuple, axis=2)
     return mat

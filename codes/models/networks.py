@@ -11,8 +11,8 @@ import models.arch.simple_generator_cfm as simple_generator_cfm
 
 #ablation
 import models.arch.generator_cfm_0_limit_scale_no_negative as generator_cfm_scale_no_neg
-import models.arch.generator_cfm_0_limit_scale as generator_cfm_limit_scale 
-import models.arch.generator_cfm_0_limit_shift as generator_cfm_limit_shift 
+import models.arch.generator_cfm_0_limit_scale as generator_cfm_limit_scale
+import models.arch.generator_cfm_0_limit_shift as generator_cfm_limit_shift
 
 logger = logging.getLogger('base')
 
@@ -77,20 +77,20 @@ def define_G(opt):
     opt_net = opt['network_G']
     which_model = opt_net['which_model_G']
 
-    if which_model == 'generator_cfm':  
-        netG = generator_cfm.CFM_Network() 
+    if which_model == 'generator_cfm':
+        netG = generator_cfm.CFM_Network()
     elif which_model == 'generator_resnet_no_condition':
-        netG = generator_resnet.ResNet_no_Condition() 
+        netG = generator_resnet.ResNet_no_Condition()
     elif which_model == "generator_resnet_condition":
-        netG = generator_resnet.ResNet_Condition()       
-    elif which_model == 'simple_generator_cfm': 
-        netG = simple_generator_cfm.CFM_Network() 
+        netG = generator_resnet.ResNet_Condition()
+    elif which_model == 'simple_generator_cfm':
+        netG = simple_generator_cfm.CFM_Network()
     elif which_model == "generator_cfm_limit_scale":
         netG = generator_cfm_limit_scale.CFM_Network()
     elif which_model == "generator_cfm_limit_shift":
         netG = generator_cfm_limit_shift.CFM_Network()
     elif which_model == "generator_cfm_scale_no_neg":
-        netG = generator_cfm_scale_no_neg.CFM_Network()    
+        netG = generator_cfm_scale_no_neg.CFM_Network()
     else:
         raise NotImplementedError('Generator model [{:s}] not recognized'.format(which_model))
 
