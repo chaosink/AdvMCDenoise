@@ -600,7 +600,7 @@ def loadEXR2matrixYChannel(path):
 
 def load_feature_mat_complete_tungsten_joint(path, FEATURE_LIST):
 
-    prefix = path.split(".")[0]
+    prefix = os.path.splitext(path)[0]
 
     color_path = prefix + "_color.exr"
     variance_path = prefix + "_variance.exr"
